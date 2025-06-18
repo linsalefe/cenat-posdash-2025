@@ -5,29 +5,40 @@ import altair as alt
 df = pd.read_csv('posdash.csv')
 
 st.set_page_config(layout='wide')
-st. title('Dash Pós Graduação CENAT 2025')
+st.title('Dash Pós Graduação CENAT 2025')
 
-st.dataframe(df)
-
+# Lista de Pós
 lista_de_pos = sorted(df['Pós - graduação'].unique().tolist())
 
-# mecanismo para selecionar as pós
+# Filtro
+pos_escolhida = st.sidebar.selectbox('Selecione a Pós:', lista_de_pos)
 
-pos_escolhida = st.selectbox('Selecione a Pós:', lista_de_pos) 
+# Filtrar os dados
+dados_filtrados = df[df['Pós - graduação'] == pos_escolhida]
 
-# Para filtrar os dados da pós escolhida
-
-dados_filtrados = df[df['Pós - graduação']== pos_escolhida]
-
-#exibir tabela
-
+# Exibir tabela
 st.dataframe(dados_filtrados)
 
-#para exibir os dados de barras com os dados
-
+# Subheader
 st.subheader(f'Dados da Pós: {pos_escolhida}')
-st.bar_chart(dados_filtrados[['Meta', 'MQL', 'Valor investido', 'CPL']])
 
+#parte estética do projeto:
 
+# Preparar dados para gráfico
+dados_grafico = dados_filtrados.melt(
+    id_vars=['Pós - graduação'],
+    value_vars=['Meta', 'MQL', 'CPL'],
+    var_name='Métrica',
+    value_name='Valor'
+)
 
-
+# Gráfico de barras com cores personalizadas
+grafico = alt.Chart(dados_grafico).mark_bar().encode(
+    x=alt.X('Métrica:N', title='Métrica'),
+    y=alt.Y('Valor:Q', title='Valor'),
+    color=alt.Color('Métrica:N', scale=alt.Scale(
+        domain=['Meta', 'MQL', 'CPL'],
+        range=["#1F8F23", '#2196F3', '#FF9800']  # Cores: verde, azul, laranja
+    ))
+)
+st.altair_chart(grafico, use_container_width=True)
