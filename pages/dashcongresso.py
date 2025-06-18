@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
+import os
 
-df = pd.read_csv('../dashcongresso.csv')
+df = pd.read_csv(os.path.join(os.path.dirname(__file__), '..', 'dashcongresso.csv'))
 
 st.set_page_config(layout='wide')
 st.title ('Dash Congressos CENAT Junho - 2025')
