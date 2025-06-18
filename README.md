@@ -1,1 +1,1 @@
-# cenat-posdash-2025
+# Dash tráfego Pago
